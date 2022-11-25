@@ -21,19 +21,7 @@ public class Main
     public static void main(String[] args)
     {
         AuthorizeWindowContainer.getAuthorizeWindow();
-        /*var client = ClientContainer.getClient();
-        boolean isConnected = tryConnectClient(client, 2121);
 
-        if(isConnected == false)
-        {
-            System.out.println("Клиенту не удалось подключиться к серверу");
-            return;
-        }
-
-        PlayerModel player = CreatePokerPlayer("Player"+(Calendar.getInstance().getTime().getSeconds()));
-        PokerContainer.getPoker().setCurrentPlayer(player);
-        ICommand registerCommand = new RegisterPokerPlayer();
-        registerCommand.send();*/
     }
 
     private static PlayerModel CreatePokerPlayer(String nickName)
