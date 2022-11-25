@@ -1,0 +1,11 @@
+<component name="ArtifactManager">
+  <artifact build-on-make="true" name="Client:jar">
+    <output-path>$PROJECT_DIR$/out/artifacts/Client</output-path>
+    <root id="root">
+      <element id="archive" name="Client.jar">
+        <element id="module-output" name="Client" />
+        <element id="extracted-dir" path="$PROJECT_DIR$/gson-2.9.1.jar" path-in-jar="/" />
+      </element>
+    </root>
+  </artifact>
+</component>
