@@ -9,14 +9,13 @@ import java.util.List;
 
 public class PlayerModel
 {
-    public String NickName;
-    public MoveType LastMove = MoveType.Check;
+    public String NickName = "Unknown";
+    public MoveType LastMove = MoveType.None;
     public Role Role = Client.Poker.Enums.Role.Player;
-    public int Chips;
-    public int Bet = -1;
+    public int Chips = 0;
     public int Place = 0;
-    public int Score;
-    public boolean IsFold = false;
-    public boolean IsMoved = false;
+    public int Bet = -1;
+    public int Score = 0;
+    public boolean IsInQueue = true;
     public List<CardModel> Cards = new ArrayList<>();
 }

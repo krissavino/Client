@@ -1,6 +1,5 @@
 package Client.Poker.Models;
 
-import Client.Client;
 import Client.Poker.Cards.Models.CardModel;
 import Client.Poker.Enums.GameStage;
 import Client.Poker.Enums.GameState;
@@ -19,5 +18,5 @@ public final class TableModel
     public GameState State = GameState.Waiting;
     public PlayerModel Winner;
     public ArrayList<CardModel> CardsOnTable = new ArrayList();
-    public Map<Integer,PlayerModel> Players = new HashMap();
+    public Map<Integer,PlayerModel> PlacePlayerMap = new HashMap();
 }
