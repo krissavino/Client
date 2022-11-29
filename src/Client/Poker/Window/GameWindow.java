@@ -127,38 +127,56 @@ public class GameWindow extends JFrame {
         }
 
     }
-    public void updateInfo() {
+    public void updateInfo()
+    {
         setVisible(true);
         setPlayersInfo();
         checkMoveTimer();
     }
-    public void checkMoveTimer() {
+
+    public void checkMoveTimer()
+    {
         if(moveTimer != null)
             moveTimer.cancel();
+
         moveTimer = new Timer();
         myProgressBar.setValue(0);
+
         for(int i = 0; i < 4; i++)
             playersProgressBars[i].setValue(0);
+
         repaint();
+
         if(!(PokerContainer.getPoker().getTable().State == GameState.Started)) return;
-        moveTimer.schedule(new TimerTask() {
+
+        moveTimer.schedule(new TimerTask()
+        {
             @Override
-            public void run() {
+            public void run()
+            {
                 Poker poker = (Poker)PokerContainer.getPoker();
                 TableModel table = PokerContainer.getPoker().getTable();
-                if(table.State == GameState.Started) {
+
+                if(table.State == GameState.Started)
+                {
                     if(table.PlayerIndexTurn == poker.getCurrentPlayer().Place)
                     {
-                        myProgressBar.setValue(myProgressBar.getValue()+5);
-                        if(myProgressBar.getValue() >= 100) {
+                        myProgressBar.setValue(myProgressBar.getValue()+10);
+
+                        if(myProgressBar.getValue() >= 100)
+                        {
                             myProgressBar.setValue(0);
                             repaint();
                             moveTimer.cancel();
                         }
-                    } else {
-                        int windowIndexTurn = (poker.getCurrentPlayer().Place+table.PlayerIndexTurn+2)%table.Players.size();
-                        playersProgressBars[windowIndexTurn].setValue(playersProgressBars[windowIndexTurn].getValue()+5);
-                        if(playersProgressBars[windowIndexTurn].getValue() >= 100) {
+                    }
+                    else
+                    {
+                        int windowIndexTurn = (poker.getCurrentPlayer().Place+table.PlayerIndexTurn+2)%table.PlacePlayerMap.size();
+                        playersProgressBars[windowIndexTurn].setValue(playersProgressBars[windowIndexTurn].getValue()+10);
+
+                        if(playersProgressBars[windowIndexTurn].getValue() >= 100)
+                        {
                             playersProgressBars[windowIndexTurn].setValue(0);
                             repaint();
                             moveTimer.cancel();
@@ -184,7 +202,8 @@ public class GameWindow extends JFrame {
     void resizeComponents2() {
         Poker poker = (Poker)PokerContainer.getPoker();
         TableModel table = PokerContainer.getPoker().getTable();
-        for(var p : table.Players.values()) {
+        for(var p : table.PlacePlayerMap.values())
+        {
             if(p.NickName.equals(poker.getCurrentPlayer().NickName))
                 poker.setCurrentPlayer(p);
         }
@@ -199,9 +218,10 @@ public class GameWindow extends JFrame {
             playersPanels[i].setVisible(false);
         }
 
-        for(int i = 0; i < table.Players.size(); i++) {
-            int windowPlayerPlace = (poker.getCurrentPlayer().Place+i)%table.Players.size();
-            PlayerModel player = table.Players.get(windowPlayerPlace);
+        for(int i = 0; i < table.PlacePlayerMap.size(); i++)
+        {
+            int windowPlayerPlace = (poker.getCurrentPlayer().Place+i)%table.PlacePlayerMap.size();
+            PlayerModel player = table.PlacePlayerMap.get(windowPlayerPlace);
             playersNicknameLabels[i].setText(player.NickName);
             if(player.Place != me.Place)
                 playersPanels[i].setVisible(true);
@@ -212,7 +232,7 @@ public class GameWindow extends JFrame {
                                     .getImage().getScaledInstance((int) (res * 15), (int) (res * 15), 1)));
                 } else {
                     playersAvatarLabels[i].setIcon(
-                            new ImageIcon((new ImageIcon(this.getClass().getResource("Pictures/Interface/" + table.Players.get(windowPlayerPlace).Role + ".png")))
+                            new ImageIcon((new ImageIcon(this.getClass().getResource("Pictures/Interface/" + table.PlacePlayerMap.get(windowPlayerPlace).Role + ".png")))
                                     .getImage().getScaledInstance((int) (res * 15), (int) (res * 15), 1)));
                 }
                 playersProgressBars[i].setSize((int) (res * 15), (int) (res * 1));
@@ -228,47 +248,30 @@ public class GameWindow extends JFrame {
 
         if(table.CardsOnTable == null) return;
         if(table.CardsOnTable.size() == 0) return;
-        for(int i = 0; i < 5; i++) {
-            tableCardsLabels[i].setIcon(new ImageIcon((new ImageIcon(this.getClass().getResource("Pictures/Cards/" + table.CardsOnTable.get(i).Color + "/" + table.CardsOnTable.get(i).Name + ".jpg"))).getImage().getScaledInstance((int) (res * 13), (int) (res * 22), 5)));
+
+        for(int counter = 0; counter < 5; counter++)
+        {
+            var card = table.CardsOnTable.get(counter);
+            var resourcePath = String.format("Pictures/Cards/%s/%s.jpg",table.CardsOnTable.get(counter).Color,table.CardsOnTable.get(counter).Name);
+
+            if(card.IsOpened == false)
+                resourcePath = "Pictures/Cards/shirt.png";
+
+            var imageIcon = new ImageIcon(this.getClass().getResource(resourcePath));
+            var scaledImage = imageIcon.getImage().getScaledInstance((int) (res * 13), (int) (res * 22), 5);
+            tableCardsLabels[counter].setIcon(new ImageIcon(scaledImage));
         }
 
-        for(int i = 0; i < 2; i++) {
+        if(me.Cards.size() == 0)
+            return;
+
+        for(int i = 0; i < 2; i++)
+        {
             myCard1.setIcon(new ImageIcon((new ImageIcon(this.getClass().getResource("Pictures/Cards/" + me.Cards.get(0).Color + "/" + me.Cards.get(0).Name + ".jpg"))).getImage().getScaledInstance((int) (res * 13), (int) (res * 22), 5)));
             myCard2.setIcon(new ImageIcon((new ImageIcon(this.getClass().getResource("Pictures/Cards/" + me.Cards.get(1).Color + "/" + me.Cards.get(1).Name + ".jpg"))).getImage().getScaledInstance((int) (res * 13), (int) (res * 22), 5)));
         }
     }
-    void resizeComponents() {
-        Poker poker = (Poker)PokerContainer.getPoker();
-        TableModel table = PokerContainer.getPoker().getTable();
-        Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
-        double sw = getWidth()/100;
-        double sh = getHeight()/100;
-        double res;
-        res = (sw > sh ? sh : sw);
-        //if(res < 1) res = 1;
-        for(int i = 0; i < 4; i++) {
-            if(playersPanels[i].isVisible()) {
-                playersAvatarLabels[i].setIcon(
-                        new ImageIcon(((ImageIcon)playersAvatarLabels[i].getIcon())
-                                .getImage().getScaledInstance((int) (res * 15), (int) (res * 10), 1)));
-                playersProgressBars[i].setSize((int) (res * 15), (int) (res * 10));
-            }
-        }
 
-        for(int i = 0; i < table.Players.size(); i++) {
-            for(int j = 0; j < 2; j++) {
-                playersCardsLabels[i][j].setIcon(new ImageIcon(((ImageIcon)(playersCardsLabels[i][j].getIcon())).getImage().getScaledInstance((int) (res * 13), (int) (res * 22), 5)));
-            }
-        }
-
-        //if(tableCardsLabels[0].getIcon() == null) return;
-        for(int i = 0; i < 5; i++) {
-            tableCardsLabels[i].setIcon(new ImageIcon(((ImageIcon)(tableCardsLabels[i].getIcon())).getImage().getScaledInstance((int) (res * 13), (int) (res * 22), 5)));
-        }
-
-        myCard1.setIcon(new ImageIcon(((ImageIcon)(myCard1.getIcon())).getImage().getScaledInstance((int) (res * 13), (int) (res * 22), 5)));
-        myCard2.setIcon(new ImageIcon(((ImageIcon)(myCard2.getIcon())).getImage().getScaledInstance((int) (res * 13), (int) (res * 22), 5)));
-    }
     public GameWindow() {
         createElementsArrays();
         setContentPane(mainPanel);

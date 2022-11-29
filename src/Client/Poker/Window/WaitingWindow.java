@@ -1,7 +1,6 @@
 package Client.Poker.Window;
 
 import Client.Commands.UpdateInfo;
-import Client.Poker.Poker;
 import Client.Poker.PokerContainer;
 
 import javax.swing.*;
@@ -20,7 +19,7 @@ public class WaitingWindow extends JFrame {
 
     public void updateInfo() {
         var poker = PokerContainer.getPoker();
-        var players = poker.getTable().Players.size();
+        var players = poker.getTable().PlacePlayerMap.size();
         var state = poker.getTable().State;
         label2.setText("Вы успешно подключились к серверу");
         label3.setText("Игроков на сервере: " + players + " / 5. Состояние: " + state);

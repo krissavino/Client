@@ -1,6 +1,7 @@
 package Client.Poker.Window;
 
 import Client.Poker.Cards.Models.CardModel;
+import Client.Poker.Enums.MoveType;
 import Client.Poker.Models.PlayerModel;
 
 import javax.swing.*;
@@ -264,7 +265,7 @@ public class ClientWindow extends JFrame {
     public void openPlayersCards() {
         for(PlayerModel p : windowPlayerModels) {
             if(p == null) continue;
-            if(p.IsFold) continue;
+            if(p.LastMove == MoveType.Fold) continue;
             for(int i = 0; i < p.Cards.size(); i++)
                 playersCards[p.Place][i].setIcon(new ImageIcon(new ImageIcon(this.getClass().getResource(CardsPictures+ "/" + p.Cards.get(i).Color + "/" + p.Cards.get(i).Name + ".jpg")).getImage().getScaledInstance(75, 100, Image.SCALE_SMOOTH)));
         }
@@ -274,7 +275,7 @@ public class ClientWindow extends JFrame {
         windowPlayerModels = playerModels;
         for(PlayerModel p : playerModels) {
             if(p == null) continue;
-            if(p.IsFold) continue;
+            if(p.LastMove == MoveType.Fold) continue;
             for(int i = 0; i < p.Cards.size(); i++) {
                 if(p.Place != myPlayerModel.Place)
                     playersCards[p.Place][i].setIcon(new ImageIcon(new ImageIcon(this.getClass().getResource(CardsPictures+"/shirt.png")).getImage().getScaledInstance(75, 100, Image.SCALE_SMOOTH)));
