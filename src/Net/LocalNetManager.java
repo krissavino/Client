@@ -7,8 +7,6 @@ import java.util.Collections;
 
 public class LocalNetManager
 {
-
-
     public static ArrayList<InetAddress> GetLocalInetAddresses()
     {
         ArrayList<NetworkInterface> networkInterfaces;

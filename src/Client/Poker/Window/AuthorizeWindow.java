@@ -5,7 +5,7 @@ import Client.Commands.Interfaces.ICommand;
 import Client.Commands.RegisterPokerPlayer;
 import Client.Poker.Models.PlayerModel;
 import Client.Poker.PokerContainer;
-import com.sun.tools.javac.Main;
+import Net.LocalNetManager;
 
 import javax.swing.*;
 import java.awt.*;
@@ -13,7 +13,6 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.ComponentEvent;
 import java.awt.event.ComponentListener;
-import java.util.Calendar;
 
 import static Client.Main.tryConnectClient;
 
@@ -28,6 +27,7 @@ public class AuthorizeWindow extends JFrame {
     private JLabel label1;
     private JLabel label2;
     private JLabel loadingLabel;
+    private JComboBox addressesList;
 
     public static void main(String[] args) {
         //new AuthorizeWindow();
@@ -71,38 +71,55 @@ public class AuthorizeWindow extends JFrame {
         label1.setText("Соединение прервалось, повторите попытку");
     }
 
+    boolean spam = false;
+    public void enterAction() {
+        if(spam == true) return;
+        spam = true;
+        loadingLabel.setVisible(true);
+        var connectThread = new Thread(()->fastConnect(nickNameTextField.getText()));
+        connectThread.start();
+    }
+    void resizeComponents() {
+        double sw = mainPanel.getWidth()/100;
+        double sh = mainPanel.getHeight()/100;
+        double res = (sw > sh ? sh : sw);
+        loadingLabel.setVisible(true);
+        loadingLabel.setIcon(new ImageIcon(new ImageIcon(this.getClass().getResource("Pictures/Interface/loading.gif")).getImage().getScaledInstance((int)(res*150),(int)(res*150),1)));
+    }
     public AuthorizeWindow() {
-        if(true) {
+        /*if(true) {
             loadingLabel.setVisible(true);
             var connectThread = new Thread(() -> fastConnect(String.valueOf(Calendar.getInstance().getTimeInMillis())));
             connectThread.start();
             return;
-        }
+        }*/
 
         setContentPane(mainPanel);
         setDefaultCloseOperation(EXIT_ON_CLOSE);
         setSize(500,500);
         setVisible(true);
 
-        loadingLabel.setVisible(false);
+        var localAddresses = LocalNetManager.GetLocalInetAddresses();
+        for(var address : localAddresses) {
+            StringBuilder str = new StringBuilder("");
+            for(int b = 0; b < 4; b++) {
+                str.insert(str.length(), Math.abs(address.getAddress()[b]));
+                if(b < 3)
+                    str.insert(str.length(), ".");
+            }
+            addressesList.addItem(str);
+        }
 
         enterNickNameButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                loadingLabel.setVisible(true);
-                var connectThread = new Thread(()->fastConnect(nickNameTextField.getText()));
-                connectThread.start();
+                enterAction();
             }
         });
         addComponentListener(new ComponentListener() {
             @Override
             public void componentResized(ComponentEvent e) {
-                Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
-                double sw = mainPanel.getWidth()/screenSize.getWidth();
-                double sh = mainPanel.getHeight()/screenSize.getHeight();
-                double res = (sw > sh ? sh : sw);
-                loadingLabel.setIcon(new ImageIcon(new ImageIcon(this.getClass().getResource("Pictures/Interface/loading.gif")).getImage().getScaledInstance((int)(res*150),(int)(res*150),1)));
-
+                resizeComponents();
             }
 
             @Override
@@ -118,6 +135,12 @@ public class AuthorizeWindow extends JFrame {
             @Override
             public void componentHidden(ComponentEvent e) {
 
+            }
+        });
+        nickNameTextField.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                enterAction();
             }
         });
     }
