@@ -72,13 +72,12 @@ public class AuthorizeWindow extends JFrame {
     }
 
     public AuthorizeWindow() {
-        /*
         if(true) {
             loadingLabel.setVisible(true);
             var connectThread = new Thread(() -> fastConnect(String.valueOf(Calendar.getInstance().getTimeInMillis())));
             connectThread.start();
             return;
-        }*/
+        }
 
         setContentPane(mainPanel);
         setDefaultCloseOperation(EXIT_ON_CLOSE);

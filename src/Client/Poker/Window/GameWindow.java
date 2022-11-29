@@ -146,7 +146,7 @@ public class GameWindow extends JFrame {
                             moveTimer.cancel();
                         }
                     } else {
-                        int windowIndexTurn = (poker.getCurrentPlayer().Place+table.PlayerIndexTurn+2)%table.Players.size();
+                        int windowIndexTurn = table.PlayerIndexTurn;
                         playersProgressBars[windowIndexTurn].setValue(playersProgressBars[windowIndexTurn].getValue()+5);
                         if(playersProgressBars[windowIndexTurn].getValue() >= 100) {
                             playersProgressBars[windowIndexTurn].setValue(0);
@@ -192,13 +192,28 @@ public class GameWindow extends JFrame {
         for(int i = 0; i < table.Players.size(); i++) {
             int windowPlayerPlace = i;
             if(windowPlayerPlace == me.Place) {
-                return;
+                continue;
             }
             PlayerModel player = table.Players.get(windowPlayerPlace);
             playersNicknameLabels[i].setText(player.NickName);
             if(player.Place != me.Place)
                 playersPanels[i].setVisible(true);
             if(playersPanels[i].isVisible()) {
+
+                for(int j = 0; j < 2; j++) {
+                    if(player.Cards.get(j).IsOpened == true)
+                        playersCardsLabels[i][j].setIcon(new ImageIcon((new ImageIcon(this.getClass().getResource("Pictures/Cards/" + player.Cards.get(j).Color + "/" + player.Cards.get(j).Name + ".jpg"))).getImage().getScaledInstance((int) (res * 13), (int) (res * 22), 5)));
+                    else
+                        playersCardsLabels[i][j].setIcon(new ImageIcon((new ImageIcon(this.getClass().getResource("Pictures/Cards/shirt.png"))).getImage().getScaledInstance((int) (res * 13), (int) (res * 22), 1)));
+                }
+
+                if(table.Winner != null) {
+                    if(table.Winner.NickName.equals(table.Players.get(i).NickName))
+                        playersAvatarLabels[i].setIcon(
+                                new ImageIcon((new ImageIcon(this.getClass().getResource("Pictures/Interface/Winner.png")))
+                                        .getImage().getScaledInstance((int) (res * 15), (int) (res * 15), 1)));
+                    continue;
+                }
                 if(player.LastMove == MoveType.Fold) {
                     playersAvatarLabels[i].setIcon(
                             new ImageIcon((new ImageIcon(this.getClass().getResource("Pictures/Interface/Fold.png")))
@@ -208,23 +223,24 @@ public class GameWindow extends JFrame {
                             new ImageIcon((new ImageIcon(this.getClass().getResource("Pictures/Interface/" + table.Players.get(windowPlayerPlace).Role + ".png")))
                                     .getImage().getScaledInstance((int) (res * 15), (int) (res * 15), 1)));
                 }
-                //playersProgressBars[i].setSize((int) (res * 15), (int) (res * 1));
 
-                for(int j = 0; j < 2; j++) {
-                    if(player.Cards.get(j).IsOpened == true)
-                        playersCardsLabels[i][j].setIcon(new ImageIcon((new ImageIcon(this.getClass().getResource("Pictures/Cards/" + player.Cards.get(j).Color + "/" + player.Cards.get(j).Name + ".jpg"))).getImage().getScaledInstance((int) (res * 13), (int) (res * 22), 5)));
-                    else
-                        playersCardsLabels[i][j].setIcon(new ImageIcon((new ImageIcon(this.getClass().getResource("Pictures/Cards/shirt.png"))).getImage().getScaledInstance((int) (res * 13), (int) (res * 22), 1)));
-                }
             }
         }
 
         if(table.CardsOnTable == null) return;
         if(table.CardsOnTable.size() == 0) return;
         for(int i = 0; i < 5; i++) {
-            tableCardsLabels[i].setIcon(new ImageIcon((new ImageIcon(this.getClass().getResource("Pictures/Cards/" + table.CardsOnTable.get(i).Color + "/" + table.CardsOnTable.get(i).Name + ".jpg"))).getImage().getScaledInstance((int) (res * 13), (int) (res * 22), 5)));
+            if(table.CardsOnTable.get(i).IsOpened == true)
+                tableCardsLabels[i].setIcon(new ImageIcon((
+                        new ImageIcon(this.getClass().getResource("Pictures/Cards/" + table.CardsOnTable.get(i).Color + "/" + table.CardsOnTable.get(i).Name + ".jpg"))).getImage().getScaledInstance((int) (res * 13), (int) (res * 22), 5)));
+            else
+                tableCardsLabels[i].setIcon(new ImageIcon((
+                        new ImageIcon(this.getClass().getResource("Pictures/Cards/shirt.png"))).getImage().getScaledInstance((int) (res * 13), (int) (res * 22), 5)));
         }
 
+        if(me.Cards == null) return;
+        if(me.Cards.get(0) == null) return;
+        if(me.Cards.get(1) == null) return;
         for(int i = 0; i < 2; i++) {
             myCard1.setIcon(new ImageIcon((new ImageIcon(this.getClass().getResource("Pictures/Cards/" + me.Cards.get(0).Color + "/" + me.Cards.get(0).Name + ".jpg"))).getImage().getScaledInstance((int) (res * 13), (int) (res * 22), 5)));
             myCard2.setIcon(new ImageIcon((new ImageIcon(this.getClass().getResource("Pictures/Cards/" + me.Cards.get(1).Color + "/" + me.Cards.get(1).Name + ".jpg"))).getImage().getScaledInstance((int) (res * 13), (int) (res * 22), 5)));
@@ -240,7 +256,6 @@ public class GameWindow extends JFrame {
             @Override
             public void componentResized(ComponentEvent e) {
                 resizeComponents();
-
             }
 
             @Override
