@@ -6,6 +6,7 @@ import Client.Commands.RegisterPokerPlayer;
 import Client.Main;
 import Client.Poker.Models.PlayerModel;
 import Client.Poker.PokerContainer;
+import Net.LocalNetManager;
 
 import javax.swing.*;
 import java.awt.*;
@@ -26,6 +27,7 @@ public class AuthorizeWindow extends JFrame {
     private JLabel label1;
     private JLabel label2;
     private JLabel loadingLabel;
+    private JComboBox addressesList;
 
     public static void main(String[] args) {
         //new AuthorizeWindow();
