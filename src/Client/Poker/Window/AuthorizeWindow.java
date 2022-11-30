@@ -3,9 +3,9 @@ package Client.Poker.Window;
 import Client.ClientContainer;
 import Client.Commands.Interfaces.ICommand;
 import Client.Commands.RegisterPokerPlayer;
+import Client.Main;
 import Client.Poker.Models.PlayerModel;
 import Client.Poker.PokerContainer;
-import Net.LocalNetManager;
 
 import javax.swing.*;
 import java.awt.*;
@@ -13,6 +13,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.ComponentEvent;
 import java.awt.event.ComponentListener;
+import java.util.Calendar;
 
 import static Client.Main.tryConnectClient;
 
@@ -27,7 +28,6 @@ public class AuthorizeWindow extends JFrame {
     private JLabel label1;
     private JLabel label2;
     private JLabel loadingLabel;
-    private JComboBox addressesList;
 
     public static void main(String[] args) {
         //new AuthorizeWindow();
@@ -38,14 +38,17 @@ public class AuthorizeWindow extends JFrame {
     {
         var poker = PokerContainer.getPoker();
         var currentPlayer = poker.getCurrentPlayer();
+
         currentPlayer = new PlayerModel();
         currentPlayer.NickName = nickName;
+
         return currentPlayer;
     }
 
-    public static boolean fastConnect(String nickName) {
+    public static boolean fastConnect(String nickName)
+    {
         var client = ClientContainer.getClient();
-        boolean isConnected = tryConnectClient(client, 2121);
+        boolean isConnected = Main.tryConnectClient(client, 2121);
 
         if(isConnected == false)
         {

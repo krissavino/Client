@@ -20,11 +20,10 @@ import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.net.InetAddress;
 
-import static Client.Main.tryConnectClient;
-
 public final class Client implements IClient
 {
     private ClientModel Client = new ClientModel();
+
     public boolean disconnect()
     {
         try
