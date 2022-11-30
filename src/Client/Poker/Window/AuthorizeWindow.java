@@ -7,13 +7,15 @@ import Client.Main;
 import Client.Poker.Models.PlayerModel;
 import Client.Poker.PokerContainer;
 import Net.LocalNetManager;
+import Net.ServerInformation;
 
 import javax.swing.*;
-import java.awt.*;
+import java.net.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.ComponentEvent;
 import java.awt.event.ComponentListener;
+import java.net.InetAddress;
 import java.util.Calendar;
 
 public class AuthorizeWindow extends JFrame {
@@ -70,26 +72,48 @@ public class AuthorizeWindow extends JFrame {
         this.setVisible(false);
     }
 
-    public void connectionFailed() {
+    public void connectionFailed()
+    {
+        spam = false;
         label1.setText("Соединение прервалось, повторите попытку");
     }
 
     boolean spam = false;
-    public void enterAction() {
+    public void enterAction()
+    {
         if(spam == true) return;
+
         spam = true;
         loadingLabel.setVisible(true);
+        InetAddress inetAdress = null;
+
+        try
+        {
+            var string = (String) addressesList.getSelectedItem();
+            inetAdress = InetAddress.getByName(string);
+        }
+        catch (UnknownHostException e)
+        {
+            throw new RuntimeException(e);
+        }
+
+        ServerInformation.ServerInetAddress = inetAdress;
+
         var connectThread = new Thread(()->fastConnect(nickNameTextField.getText()));
+
         connectThread.start();
     }
-    void resizeComponents() {
+    void resizeComponents()
+    {
         double sw = mainPanel.getWidth()/100;
         double sh = mainPanel.getHeight()/100;
         double res = (sw > sh ? sh : sw);
+
         loadingLabel.setVisible(true);
         loadingLabel.setIcon(new ImageIcon(new ImageIcon(this.getClass().getResource("Pictures/Interface/loading.gif")).getImage().getScaledInstance((int)(res*150),(int)(res*150),1)));
     }
-    public AuthorizeWindow() {
+    public AuthorizeWindow()
+    {
         /*if(true) {
             loadingLabel.setVisible(true);
             var connectThread = new Thread(() -> fastConnect(String.valueOf(Calendar.getInstance().getTimeInMillis())));
@@ -103,15 +127,8 @@ public class AuthorizeWindow extends JFrame {
         setVisible(true);
 
         var localAddresses = LocalNetManager.GetLocalInetAddresses();
-        for(var address : localAddresses) {
-            StringBuilder str = new StringBuilder("");
-            for(int b = 0; b < 4; b++) {
-                str.insert(str.length(), Math.abs(address.getAddress()[b]));
-                if(b < 3)
-                    str.insert(str.length(), ".");
-            }
-            addressesList.addItem(str);
-        }
+        for(var address : localAddresses)
+            addressesList.addItem(address.getHostAddress());
 
         enterNickNameButton.addActionListener(new ActionListener() {
             @Override
