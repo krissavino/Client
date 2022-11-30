@@ -15,8 +15,6 @@ import java.awt.event.ComponentEvent;
 import java.awt.event.ComponentListener;
 import java.util.Calendar;
 
-import static Client.Main.tryConnectClient;
-
 public class AuthorizeWindow extends JFrame {
     private JPanel mainPanel;
     private JTextField nickNameTextField;
