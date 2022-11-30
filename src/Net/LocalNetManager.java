@@ -47,7 +47,7 @@ public class LocalNetManager
                 address_bytesArray[3] = (byte)counter;
                 var server = new InetSocketAddress(InetAddress.getByAddress(address_bytesArray), port);
 
-                socket.connect(server, 10);
+                socket.connect(server, 50);
 
                 if (socket.isConnected())
                     return socket;
