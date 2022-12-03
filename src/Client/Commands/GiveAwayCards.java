@@ -10,7 +10,7 @@ public class GiveAwayCards extends SimpleCommandModel implements ICommand
         Name = GiveAwayCards.class.getSimpleName();
     }
 
-    public String getName()
+    public String getCommandName()
     {
         return Name;
     }
@@ -23,11 +23,11 @@ public class GiveAwayCards extends SimpleCommandModel implements ICommand
         return null;
     }
 
-    public void execute(){
+    public void executeOnClient(){
 
     }
 
-    public void send() {
+    public void sendToServer() {
 
     }
 }

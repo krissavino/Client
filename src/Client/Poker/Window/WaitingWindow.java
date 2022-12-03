@@ -30,7 +30,7 @@ public class WaitingWindow extends JFrame {
         setDefaultCloseOperation(EXIT_ON_CLOSE);
         setSize(500,500);
         setVisible(true);
-        new UpdateInfo().send();
+        new UpdateInfo().sendToServer();
         addComponentListener(new ComponentListener() {
             @Override
             public void componentResized(ComponentEvent e) {

@@ -7,8 +7,6 @@ import Client.Commands.Interfaces.ISimpleCommand;
 import Client.Commands.Models.SimpleCommandModel;
 import Client.Interfaces.IClient;
 import Client.Models.ClientModel;
-import Client.Poker.Models.PlayerModel;
-import Client.Poker.PokerContainer;
 import Net.LocalNetManager;
 import Net.ServerInformation;
 import com.google.gson.Gson;
@@ -123,16 +121,16 @@ public final class Client implements IClient
 
     public void executeCommand(ICommand command)
     {
-        var commandName = command.getName();
+        var commandName = command.getCommandName();
         System.out.println(commandName);
-        command.execute();
+        command.executeOnClient();
     }
 
     public void executeCommand(CommandEnum commandEnum)
     {
         var command = Client.Commands.get(commandEnum);
-        var commandName = command.getName();
+        var commandName = command.getCommandName();
         System.out.println(commandName);
-        command.execute();
+        command.executeOnClient();
     }
 }

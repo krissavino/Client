@@ -17,7 +17,7 @@ public class UpdateInfo extends SimpleCommandModel implements ICommand
         Name = this.getClass().getSimpleName();
     }
 
-    public String getName()
+    public String getCommandName()
     {
         return Name;
     }
@@ -31,7 +31,7 @@ public class UpdateInfo extends SimpleCommandModel implements ICommand
         tableModel = (TableModel) object;
     }
 
-    public void execute()
+    public void executeOnClient()
     {
         PokerContainer.getPoker().setTable(tableModel);
 
@@ -45,7 +45,7 @@ public class UpdateInfo extends SimpleCommandModel implements ICommand
         }
     }
 
-    public void send() {
+    public void sendToServer() {
 
     }
 }

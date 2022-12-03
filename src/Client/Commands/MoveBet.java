@@ -15,7 +15,7 @@ public class MoveBet extends SimpleCommandModel implements ICommand
         Name = this.getClass().getSimpleName();
     }
 
-    public String getName()
+    public String getCommandName()
     {
         return Name;
     }
@@ -29,12 +29,12 @@ public class MoveBet extends SimpleCommandModel implements ICommand
         bet = (int) object;
     }
 
-    public void execute()
+    public void executeOnClient()
     {
 
     }
 
-    public void send()
+    public void sendToServer()
     {
         var message = new JsonConverter().toJson(this);
         ClientContainer.getClient().sendMessage(message);

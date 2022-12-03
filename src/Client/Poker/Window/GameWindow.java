@@ -302,7 +302,7 @@ public class GameWindow extends JFrame {
             public void actionPerformed(ActionEvent e) {
                 MoveCheck move = new MoveCheck();
                 move.setObjectToSend(0);
-                move.send();
+                move.sendToServer();
             }
         });
         callButton.addActionListener(new ActionListener() {
@@ -312,7 +312,7 @@ public class GameWindow extends JFrame {
                 if(PokerContainer.getPoker().getCurrentPlayer().Chips < PokerContainer.getPoker().getTable().Bet)
                     return;
                 move.setObjectToSend(0);
-                move.send();
+                move.sendToServer();
             }
         });
         betButton.addActionListener(new ActionListener() {
@@ -322,7 +322,7 @@ public class GameWindow extends JFrame {
                 if(PokerContainer.getPoker().getCurrentPlayer().Chips < PokerContainer.getPoker().getTable().Bet)
                     return;
                 move.setObjectToSend(0);
-                move.send();
+                move.sendToServer();
             }
         });
         raiseBtn.addActionListener(new ActionListener() {
@@ -332,7 +332,7 @@ public class GameWindow extends JFrame {
                 if(PokerContainer.getPoker().getCurrentPlayer().Chips < PokerContainer.getPoker().getTable().Bet)
                     return;
                 move.setObjectToSend(0);
-                move.send();
+                move.sendToServer();
             }
         });
         foldButton.addActionListener(new ActionListener() {
@@ -340,7 +340,7 @@ public class GameWindow extends JFrame {
             public void actionPerformed(ActionEvent e) {
                 MoveFold move = new MoveFold();
                 move.setObjectToSend(0);
-                move.send();
+                move.sendToServer();
 
             }
         });

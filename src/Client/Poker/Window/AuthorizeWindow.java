@@ -16,7 +16,6 @@ import java.awt.event.ActionListener;
 import java.awt.event.ComponentEvent;
 import java.awt.event.ComponentListener;
 import java.net.InetAddress;
-import java.util.Calendar;
 
 public class AuthorizeWindow extends JFrame {
     private JPanel mainPanel;
@@ -63,7 +62,7 @@ public class AuthorizeWindow extends JFrame {
         PokerContainer.getPoker().setCurrentPlayer(player);
         ICommand registerCommand = new RegisterPokerPlayer();
         registerCommand.setObjectToSend(player);
-        registerCommand.send();
+        registerCommand.sendToServer();
         AuthorizeWindowContainer.getAuthorizeWindow().connectionSuccess();
         return true;
     }

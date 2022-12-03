@@ -10,7 +10,7 @@ public class PlaceOnTable extends SimpleCommandModel implements ICommand
         Name = this.getClass().getSimpleName();
     }
 
-    public String getName() {
+    public String getCommandName() {
         return Name;
     }
 
@@ -22,11 +22,11 @@ public class PlaceOnTable extends SimpleCommandModel implements ICommand
         return null;
     }
 
-    public void execute() {
+    public void executeOnClient() {
 
     }
 
-    public void send() {
+    public void sendToServer() {
 
     }
 }

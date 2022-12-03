@@ -17,7 +17,7 @@ public final class RegisterPokerPlayer extends SimpleCommandModel implements ICo
         Name = this.getClass().getSimpleName();
     }
 
-    public String getName()
+    public String getCommandName()
     {
         return Name;
     }
@@ -30,14 +30,14 @@ public final class RegisterPokerPlayer extends SimpleCommandModel implements ICo
         Player = (PlayerModel) object;
     }
 
-    public void execute()
+    public void executeOnClient()
     {
         var poker = PokerContainer.getPoker();
         poker.setCurrentPlayer(Player);
         WaitingWindowContainer.getWaitingWindow();
     }
 
-    public void send()
+    public void sendToServer()
     {
         var poker = PokerContainer.getPoker();
         var currentPlayer = poker.getCurrentPlayer();
