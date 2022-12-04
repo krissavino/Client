@@ -12,4 +12,12 @@ public class AuthorizeWindowContainer
 
         return authorizeWindow;
     }
+
+    public static void closeWindow()
+    {
+        if(authorizeWindow == null)
+            return;
+
+        authorizeWindow.closeWindow();
+    }
 }

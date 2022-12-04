@@ -12,4 +12,12 @@ public class WaitingWindowContainer
 
         return waitingWindow;
     }
+
+    public static void closeWindow()
+    {
+        if(waitingWindow == null)
+            return;
+
+        waitingWindow.closeWindow();
+    }
 }

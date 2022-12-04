@@ -8,6 +8,7 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ComponentEvent;
 import java.awt.event.ComponentListener;
+import java.awt.event.WindowEvent;
 import java.util.ArrayList;
 import java.util.Timer;
 import java.util.TimerTask;
@@ -448,4 +449,8 @@ public class ClientWindow extends JFrame {
         }
     }
 
+    public void close()
+    {
+        dispatchEvent(new WindowEvent(this, WindowEvent.WINDOW_CLOSING));
+    }
 }

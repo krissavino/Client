@@ -10,11 +10,8 @@ import Net.LocalNetManager;
 import Net.ServerInformation;
 
 import javax.swing.*;
+import java.awt.event.*;
 import java.net.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.awt.event.ComponentEvent;
-import java.awt.event.ComponentListener;
 import java.net.InetAddress;
 
 public class AuthorizeWindow extends JFrame {
@@ -109,7 +106,7 @@ public class AuthorizeWindow extends JFrame {
         double res = (sw > sh ? sh : sw);
 
         loadingLabel.setVisible(true);
-        loadingLabel.setIcon(new ImageIcon(new ImageIcon(this.getClass().getResource("Pictures/Interface/loading.gif")).getImage().getScaledInstance((int)(res*150),(int)(res*150),1)));
+        loadingLabel.setIcon(new ImageIcon(new ImageIcon(this.getClass().getResource("Pictures/Interface/loading.gif")).getImage().getScaledInstance((int)(res*15),(int)(res*15),1)));
     }
     public AuthorizeWindow()
     {
@@ -133,6 +130,7 @@ public class AuthorizeWindow extends JFrame {
             @Override
             public void actionPerformed(ActionEvent e) {
                 enterAction();
+                resizeComponents();
             }
         });
         addComponentListener(new ComponentListener() {
@@ -162,5 +160,10 @@ public class AuthorizeWindow extends JFrame {
                 enterAction();
             }
         });
+    }
+
+    public void closeWindow()
+    {
+        dispatchEvent(new WindowEvent(this, WindowEvent.WINDOW_CLOSING));
     }
 }

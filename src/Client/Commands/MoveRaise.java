@@ -9,30 +9,17 @@ import Json.JsonConverter;
 
 public class MoveRaise extends SimpleCommandModel implements ICommand
 {
-    int bet;
-    public MoveRaise()
-    {
-        Name = this.getClass().getSimpleName();
-    }
+    int Bet;
 
-    public String getCommandName()
-    {
-        return Name;
-    }
+    public MoveRaise() { Name = this.getClass().getSimpleName(); }
 
-    public Object getReceivedObject()
-    {
-        return null;
-    }
+    public String getCommandName() { return Name; }
 
-    public void setObjectToSend(Object object) {
-        bet = (int) object;
-    }
+    public Object getReceivedObject() { return null; }
 
-    public void executeOnClient()
-    {
+    public void setObjectToSend(Object object) { Bet = (int) object;}
 
-    }
+    public void executeOnClient() {}
 
     public void sendToServer()
     {

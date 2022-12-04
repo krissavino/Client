@@ -2,50 +2,42 @@ package Client.Commands;
 
 import Client.Commands.Interfaces.ICommand;
 import Client.Commands.Models.SimpleCommandModel;
-import Client.Poker.Enums.GameState;
+import Client.Poker.Enums.LobbyState;
 import Client.Poker.Models.TableModel;
 import Client.Poker.PokerContainer;
 import Client.Poker.Window.GameWindowContainer;
-import Client.Poker.Window.WaitingWindow;
 import Client.Poker.Window.WaitingWindowContainer;
 
 public class UpdateInfo extends SimpleCommandModel implements ICommand
 {
-    protected TableModel tableModel;
-    public UpdateInfo()
-    {
-        Name = this.getClass().getSimpleName();
-    }
+    protected TableModel Table;
+    public UpdateInfo() { Name = this.getClass().getSimpleName(); }
 
-    public String getCommandName()
-    {
-        return Name;
-    }
+    public String getCommandName() { return Name; }
 
-    public Object getReceivedObject()
-    {
-        return tableModel;
-    }
+    public Object getReceivedObject() { return Table; }
 
-    public void setObjectToSend(Object object) {
-        tableModel = (TableModel) object;
-    }
+    public void setObjectToSend(Object object) { Table = (TableModel) object; }
 
     public void executeOnClient()
     {
-        PokerContainer.getPoker().setTable(tableModel);
+        if(Table == null)
+            return;
 
-        if(tableModel.State == GameState.Waiting) {
+        PokerContainer.getPoker().setTable(Table);
+
+        if(Table.LobbyState == LobbyState.Waiting)
+        {
             GameWindowContainer.getGameWindow().setVisible(false);
             WaitingWindowContainer.getWaitingWindow().setVisible(true);
             WaitingWindowContainer.getWaitingWindow().updateInfo();
-        } else {
+        }
+        else
+        {
             WaitingWindowContainer.getWaitingWindow().setVisible(false);
             GameWindowContainer.getGameWindow().updateInfo();
         }
     }
 
-    public void sendToServer() {
-
-    }
+    public void sendToServer() {}
 }

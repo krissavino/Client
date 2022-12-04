@@ -1,7 +1,7 @@
 package Client.Poker.Window;
 
 import Client.Commands.*;
-import Client.Poker.Enums.GameState;
+import Client.Poker.Enums.LobbyState;
 import Client.Poker.Enums.MoveType;
 import Client.Poker.Models.PlayerModel;
 import Client.Poker.Models.TableModel;
@@ -10,10 +10,7 @@ import Client.Poker.PokerContainer;
 
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.awt.event.ComponentEvent;
-import java.awt.event.ComponentListener;
+import java.awt.event.*;
 import java.util.Timer;
 import java.util.TimerTask;
 
@@ -90,7 +87,7 @@ public class GameWindow extends JFrame {
         playersAvatarLabels[1] = player2Avatar;
         playersAvatarLabels[2] = player3Avatar;
         playersAvatarLabels[3] = player4Avatar;
-        playersProgressBars = new JProgressBar[4];
+        playersProgressBars = new JProgressBar[5];
         playersProgressBars[0] = player1ProgressBar;
         playersProgressBars[1] = player2ProgressBar;
         playersProgressBars[2] = player3ProgressBar;
@@ -116,14 +113,18 @@ public class GameWindow extends JFrame {
         tableCardsLabels[3] = tableCard4;
         tableCardsLabels[4] = tableCard5;
 
-
         Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
+
         double sw = mainPanel.getWidth()/screenSize.getWidth();
         double sh = mainPanel.getHeight()/screenSize.getHeight();
         double res;
+
         res = (sw > sh ? sh : sw);
+
         if(res < 1) res = 1;
-        for(int i = 0; i < playersAvatarLabels.length; i++) {
+
+        for(int i = 0; i < playersAvatarLabels.length; i++)
+        {
             playersAvatarLabels[i].setIcon(new ImageIcon(new ImageIcon(this.getClass().getResource("Pictures/Interface/Player.png")).getImage().getScaledInstance((int)(res*150),(int)(res*150),1)));
         }
 
@@ -132,46 +133,64 @@ public class GameWindow extends JFrame {
     {
         setVisible(true);
         setPlayersInfo();
-
         checkMoveTimer();
     }
 
-    public void checkMoveTimer() {
+    public void checkMoveTimer()
+    {
+
         if(moveTimer != null)
             moveTimer.cancel();
+
         moveTimer = new Timer();
         myProgressBar.setValue(0);
+
         for(int i = 0; i < 4; i++)
             playersProgressBars[i].setValue(0);
+
         repaint();
-        if(!(PokerContainer.getPoker().getTable().State == GameState.Started)) return;
-        moveTimer.schedule(new TimerTask() {
+
+        if(!(PokerContainer.getPoker().getTable().LobbyState == LobbyState.Started)) return;
+
+        moveTimer.schedule(new TimerTask()
+        {
             @Override
-            public void run() {
-                Poker poker = (Poker)PokerContainer.getPoker();
-                TableModel table = PokerContainer.getPoker().getTable();
-                if(table.State == GameState.Started) {
-                    if(table.PlayerIndexTurn == poker.getCurrentPlayer().Place && !poker.getCurrentPlayer().IsInQueue)
-                    {
-                        myProgressBar.setValue(myProgressBar.getValue()+(PokerContainer.getPoker().getTable().TimerStartTime/1000));
-                        if(myProgressBar.getValue() >= 100) {
-                            myProgressBar.setValue(0);
-                            repaint();
-                            moveTimer.cancel();
-                        }
-                    } else {
-                        int windowIndexTurn = table.PlayerIndexTurn;
-                        playersProgressBars[windowIndexTurn].setValue(playersProgressBars[windowIndexTurn].getValue()+(PokerContainer.getPoker().getTable().TimerStartTime/1000));
-                        if(playersProgressBars[windowIndexTurn].getValue() >= 100) {
-                            playersProgressBars[windowIndexTurn].setValue(0);
-                            repaint();
-                            moveTimer.cancel();
-                        }
-                    }
+            public void run()
+            {
+                var poker = (Poker)PokerContainer.getPoker();
+                var table = PokerContainer.getPoker().getTable();
+
+                if(table.LobbyState != LobbyState.Started)
+                    return;
+
+                if(table.PlayerIndexTurn == poker.getCurrentPlayer().Place && !poker.getCurrentPlayer().IsInQueue)
+                    UpdatePlayerProgressBar(myProgressBar);
+                else
+                {
+                    var playerProgressBar = playersProgressBars[table.PlayerIndexTurn];
+                    UpdatePlayerProgressBar(playerProgressBar);
                 }
             }
         }, 0, 1000);
     }
+
+    private void UpdatePlayerProgressBar(JProgressBar progressBar)
+    {
+        var serverTimerSeconds = PokerContainer.getPoker().getTable().TimerStartTime/1000;
+        var serverTimerTicks = 100/serverTimerSeconds;
+        var currentProgressBarValue = progressBar.getValue();
+        var nextProgressBarValue = currentProgressBarValue + serverTimerTicks;
+
+        progressBar.setValue(nextProgressBarValue);
+
+        if(progressBar.getValue() >= 100)
+        {
+            progressBar.setValue(0);
+            repaint();
+            moveTimer.cancel();
+        }
+    }
+
     public void setPlayersInfo() {
         Poker poker = (Poker)PokerContainer.getPoker();
         TableModel table = PokerContainer.getPoker().getTable();
@@ -185,13 +204,15 @@ public class GameWindow extends JFrame {
         myNicknameLabel.setText("Никнейм: " + me.NickName);
         myChipsLabel.setText("Мои фишки: " + me.Chips);
     }
-    void resizeComponents() {
+    void resizeComponents()
+    {
         Poker poker = (Poker)PokerContainer.getPoker();
         TableModel table = PokerContainer.getPoker().getTable();
-        for(var p : table.PlacePlayerMap.values()) {
+
+        for(var p : table.PlacePlayerMap.values())
             if(p.NickName.equals(poker.getCurrentPlayer().NickName))
                 poker.setCurrentPlayer(p);
-        }
+
         PlayerModel me = poker.getCurrentPlayer();
         if(me == null) return;
         double sw = mainPanel.getWidth()/100;
@@ -199,37 +220,42 @@ public class GameWindow extends JFrame {
         double res;
         res = (sw > sh ? sh : sw);
 
-        for(int i = 0; i < playersPanels.length; i++) {
+        for(int i = 0; i < playersPanels.length; i++)
             playersPanels[i].setVisible(false);
-        }
 
-        for(int i = 0; i < table.PlacePlayerMap.size(); i++) {
+        for(int i = 0; i < table.PlacePlayerMap.size(); i++)
+        {
             int windowPlayerPlace = i;
 
             System.out.println("is queu:" + me.IsInQueue);
-            if(me.IsInQueue == false) {
-                if (windowPlayerPlace == me.Place) {
+
+            if(me.IsInQueue == false)
+            {
+                if (windowPlayerPlace == me.Place)
                     continue;
-                } else {
+                else
                     playersPanels[i].setVisible(true);
-                }
             }
-            else {
+            else
+            {
                 playersPanels[i].setVisible(true);
             }
 
             PlayerModel player = table.PlacePlayerMap.get(windowPlayerPlace);
             playersNicknameLabels[i].setText(player.NickName);
-            if(playersPanels[i].isVisible()) {
 
-                for(int j = 0; j < 2; j++) {
+            if(playersPanels[i].isVisible())
+            {
+                for(int j = 0; j < 2; j++)
+                {
                     if(player.Cards.get(j).IsOpened == true)
                         playersCardsLabels[i][j].setIcon(new ImageIcon((new ImageIcon(this.getClass().getResource("Pictures/Cards/" + player.Cards.get(j).Color + "/" + player.Cards.get(j).Name + ".jpg"))).getImage().getScaledInstance((int) (res * 13), (int) (res * 22), 5)));
                     else
                         playersCardsLabels[i][j].setIcon(new ImageIcon((new ImageIcon(this.getClass().getResource("Pictures/Cards/shirt.png"))).getImage().getScaledInstance((int) (res * 13), (int) (res * 22), 1)));
                 }
 
-                if(table.Winner != null) {
+                if(table.Winner != null)
+                {
                     if(table.Winner.NickName.equals(table.PlacePlayerMap.get(i).NickName))
                         playersAvatarLabels[i].setIcon(
                                 new ImageIcon((new ImageIcon(this.getClass().getResource("Pictures/Interface/Winner.png")))
@@ -344,5 +370,10 @@ public class GameWindow extends JFrame {
 
             }
         });
+    }
+
+    public void closeWindow()
+    {
+        dispatchEvent(new WindowEvent(this, WindowEvent.WINDOW_CLOSING));
     }
 }

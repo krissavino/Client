@@ -12,4 +12,12 @@ public class GameWindowContainer
 
         return gameWindow;
     }
+
+    public static void closeWindow()
+    {
+        if(gameWindow == null)
+            return;
+
+        gameWindow.closeWindow();
+    }
 }
