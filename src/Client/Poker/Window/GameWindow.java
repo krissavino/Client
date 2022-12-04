@@ -163,7 +163,7 @@ public class GameWindow extends JFrame {
                 if(table.LobbyState != LobbyState.Started)
                     return;
 
-                if(table.PlayerIndexTurn == poker.getCurrentPlayer().Place && !poker.getCurrentPlayer().IsInQueue)
+                if(table.PlayerIndexTurn == poker.getCurrentPlayer().Place && !poker.getCurrentPlayer().InQueue)
                     UpdatePlayerProgressBar(myProgressBar);
                 else
                 {
@@ -227,9 +227,9 @@ public class GameWindow extends JFrame {
         {
             int windowPlayerPlace = i;
 
-            System.out.println("is queu:" + me.IsInQueue);
+            System.out.println("is queu:" + me.InQueue);
 
-            if(me.IsInQueue == false)
+            if(me.InQueue == false)
             {
                 if (windowPlayerPlace == me.Place)
                     continue;

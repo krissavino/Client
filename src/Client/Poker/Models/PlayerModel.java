@@ -1,5 +1,6 @@
 package Client.Poker.Models;
 
+import Client.Client;
 import Client.Poker.Cards.Models.CardModel;
 import Client.Poker.Enums.MoveType;
 import Client.Poker.Enums.Role;
@@ -16,6 +17,7 @@ public class PlayerModel
     public int Place = 0;
     public int Bet = -1;
     public int Score = 0;
-    public boolean IsInQueue = true;
+    public boolean Disconnected = false;
+    public boolean InQueue = true;
     public List<CardModel> Cards = new ArrayList<>();
 }
