@@ -69,6 +69,12 @@ public class GameWindow extends JFrame {
     private JPanel buttonsPanel;
     private JButton raiseBtn;
     private JButton foldButton;
+    private JComboBox betComboBox;
+    private JLabel potLabel;
+    private JLabel player1BetLabel;
+    private JLabel player2BetLabel;
+    private JLabel player3PotLabel;
+    private JLabel player4PotLabel;
 
     private JPanel[] playersPanels;
     private JLabel[] playersAvatarLabels;
