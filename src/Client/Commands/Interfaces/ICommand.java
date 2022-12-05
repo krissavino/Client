@@ -2,11 +2,11 @@ package Client.Commands.Interfaces;
 
 public interface ICommand
 {
-    void execute();
+    String getCommandName();
 
-    void send();
+    void executeOnClient();
 
-    String getName();
+    void sendToServer();
 
     void setObjectToSend(Object object);
 

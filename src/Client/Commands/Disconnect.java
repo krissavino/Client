@@ -1,12 +1,13 @@
 package Client.Commands;
 
 
+import Client.ClientContainer;
 import Client.Commands.Interfaces.ICommand;
 import Client.Commands.Models.SimpleCommandModel;
 
-public class Empty extends SimpleCommandModel implements ICommand
+public class Disconnect extends SimpleCommandModel implements ICommand
 {
-    public Empty() { Name = this.getClass().getSimpleName(); }
+    public Disconnect() { Name = this.getClass().getSimpleName(); }
 
     public String getCommandName() { return Name; }
 
@@ -14,7 +15,11 @@ public class Empty extends SimpleCommandModel implements ICommand
 
     public Object getReceivedObject() { return null; }
 
-    public void executeOnClient() {}
+    public void executeOnClient()
+    {
+        var client = ClientContainer.getClient();
+        client.disconnect();
+    }
 
     public void sendToServer() {}
 }

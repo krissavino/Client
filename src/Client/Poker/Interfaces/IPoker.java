@@ -7,8 +7,11 @@ public interface IPoker
 {
     PlayerModel getCurrentPlayer();
 
+    PlayerModel getPlayer(String nickName);
+
     void setCurrentPlayer(PlayerModel player);
 
     void setTable(TableModel table);
+
     TableModel getTable();
 }

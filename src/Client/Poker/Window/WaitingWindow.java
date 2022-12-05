@@ -7,6 +7,7 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ComponentEvent;
 import java.awt.event.ComponentListener;
+import java.awt.event.WindowEvent;
 
 public class WaitingWindow extends JFrame {
     private JPanel mainPanel;
@@ -17,12 +18,14 @@ public class WaitingWindow extends JFrame {
     private JLabel label3;
     private JLabel loadingLabel;
 
-    public void updateInfo() {
+    public void updateInfo()
+    {
         var poker = PokerContainer.getPoker();
-        var players = poker.getTable().PlacePlayerMap.size();
-        var state = poker.getTable().State;
+        var playersInQueue = poker.getTable().PlayersInQueue;
+
         label2.setText("Вы успешно подключились к серверу");
-        label3.setText("Игроков на сервере: " + players + " / 5. Состояние: " + state);
+        var playersCounterText = String.format("Игроков в очереди: %s из 5", playersInQueue);
+        label3.setText(playersCounterText);
     }
 
     public WaitingWindow() {
@@ -30,7 +33,7 @@ public class WaitingWindow extends JFrame {
         setDefaultCloseOperation(EXIT_ON_CLOSE);
         setSize(500,500);
         setVisible(true);
-        new UpdateInfo().send();
+        new UpdateInfo().sendToServer();
         addComponentListener(new ComponentListener() {
             @Override
             public void componentResized(ComponentEvent e) {
@@ -57,5 +60,10 @@ public class WaitingWindow extends JFrame {
 
             }
         });
+    }
+
+    public void closeWindow()
+    {
+        dispatchEvent(new WindowEvent(this, WindowEvent.WINDOW_CLOSING));
     }
 }

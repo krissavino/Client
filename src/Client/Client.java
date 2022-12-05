@@ -7,8 +7,9 @@ import Client.Commands.Interfaces.ISimpleCommand;
 import Client.Commands.Models.SimpleCommandModel;
 import Client.Interfaces.IClient;
 import Client.Models.ClientModel;
-import Client.Poker.Models.PlayerModel;
-import Client.Poker.PokerContainer;
+import Client.Poker.Window.AuthorizeWindowContainer;
+import Client.Poker.Window.GameWindowContainer;
+import Client.Poker.Window.WaitingWindowContainer;
 import Net.LocalNetManager;
 import Net.ServerInformation;
 import com.google.gson.Gson;
@@ -22,15 +23,27 @@ import java.net.InetAddress;
 
 public final class Client implements IClient
 {
-    private ClientModel Client = new ClientModel();
+    private static ClientModel Client = new ClientModel();
+    private static Thread clientTread = null;
+    private ThreadController ThreadController = new ThreadController();
 
     public boolean disconnect()
     {
         try
         {
+            ThreadController.Cancel();
             this.Client.BufferedReader.close();
             this.Client.BufferedWriter.close();
             this.Client.Socket.close();
+            clientTread.interrupt();
+
+            AuthorizeWindowContainer.closeWindow();
+            GameWindowContainer.closeWindow();
+            WaitingWindowContainer.closeWindow();
+
+            var text = String.format("Клиент отключился от сервера");
+            System.out.println(text);
+
             return true;
         }
         catch (Exception e)
@@ -52,7 +65,8 @@ public final class Client implements IClient
             Client.BufferedReader = new BufferedReader(new InputStreamReader(Client.Socket.getInputStream()));
             Client.BufferedWriter = new PrintWriter(this.Client.Socket.getOutputStream(), true);
 
-            new Thread(()-> listenForMessages()).start();
+            clientTread = new Thread(()-> listenForMessages());
+            clientTread.start();
         }
         catch (Exception exception)
         {
@@ -70,7 +84,7 @@ public final class Client implements IClient
     {
         String message = null;
 
-        while (true)
+        while (ThreadController.isCancellationRequested() == false)
         {
             try
             {
@@ -86,7 +100,13 @@ public final class Client implements IClient
                     System.out.println("Сервер принудительно отключил связ");
                     return;
                 }
-                throw new RuntimeException(e);
+                if(e.getMessage() == "Stream closed" == true)
+                {
+                    ServerInformation.ServerInetAddress = null;
+                    System.out.println("Связь с сервером прервалась");
+                    return;
+                }
+                return;
             }
         }
     }
@@ -107,6 +127,9 @@ public final class Client implements IClient
         ISimpleCommand jCommand = gson.fromJson(jsonText, new TypeToken<SimpleCommandModel>(){}.getType());
         ICommand command = new Empty();
 
+        if(jCommand == null)
+            return command;
+
         for(var commandEnum : CommandEnum.values())
         {
             if (jCommand.getName().equals(commandEnum.toString()) == false)
@@ -123,16 +146,17 @@ public final class Client implements IClient
 
     public void executeCommand(ICommand command)
     {
-        var commandName = command.getName();
-        System.out.println(commandName);
-        command.execute();
+        var commandName = command.getCommandName();
+        var text = String.format("Комманда от сервера: %s", commandName);
+        System.out.println(text);
+        command.executeOnClient();
     }
 
     public void executeCommand(CommandEnum commandEnum)
     {
         var command = Client.Commands.get(commandEnum);
-        var commandName = command.getName();
+        var commandName = command.getCommandName();
         System.out.println(commandName);
-        command.execute();
+        command.executeOnClient();
     }
 }
