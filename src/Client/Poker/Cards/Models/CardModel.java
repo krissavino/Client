@@ -8,7 +8,7 @@ public class CardModel
     public CardColor Color = CardColor.values()[0];
     public CardName Name = CardName.values()[0];
 
-    public boolean IsOpened = false;
+    public boolean Opened = false;
     public CardModel(CardColor color, CardName name)
     {
         this.Color = color;
@@ -23,10 +23,10 @@ public class CardModel
     }
 
     private void setOpened(boolean opened) {
-        IsOpened = opened;
+        Opened = opened;
     }
 
     private boolean isOpened() {
-        return IsOpened;
+        return Opened;
     }
 }

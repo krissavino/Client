@@ -386,16 +386,12 @@ public class ClientWindow extends JFrame {
             {
                 if(p.Bet == 0)
                     myBetLabel.setText("CHECK");
-                if(p.Bet == -1)
-                    myBetLabel.setText("");
                 if(p.Bet > 0)
                     myBetLabel.setText("BET: " + p.Bet);
                 continue;
             }
             if(p.Bet == 0)
                 playersBetLabels[p.Place].setText("CHECK");
-            if(p.Bet == -1)
-                playersBetLabels[p.Place].setText("...");
             if(p.Bet > 0)
                 playersBetLabels[p.Place].setText("BET: " + p.Bet);
         }
@@ -403,7 +399,7 @@ public class ClientWindow extends JFrame {
 
     public void setTableCards(ArrayList<CardModel> cardModels) {
         for(int i = 0; i < 5; i++) {
-            if(cardModels.get(i).IsOpened)
+            if(cardModels.get(i).Opened)
                 tableCardLabels[i].setIcon(new ImageIcon(new ImageIcon(this.getClass().getResource(CardsPictures+"/"+ cardModels.get(i).Color+"/"+ cardModels.get(i).Name+".jpg")).getImage().getScaledInstance(125, 175, Image.SCALE_SMOOTH)));
             else
                 tableCardLabels[i].setIcon(new ImageIcon(new ImageIcon(this.getClass().getResource(CardsPictures+"/shirt.png")).getImage().getScaledInstance(125, 175, Image.SCALE_SMOOTH)));

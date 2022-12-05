@@ -191,30 +191,25 @@ public class GameWindow extends JFrame {
         }
     }
 
-    public void setPlayersInfo() {
+    public void setPlayersInfo()
+    {
         Poker poker = (Poker)PokerContainer.getPoker();
-        TableModel table = PokerContainer.getPoker().getTable();
         PlayerModel me = poker.getCurrentPlayer();
         if(me == null) return;
-
-        resizeComponents();
 
         int myBet = (me.Bet < 0 ? 0 : me.Bet);
         myBetLabel.setText("Моя ставка: " + myBet);
         myNicknameLabel.setText("Никнейм: " + me.NickName);
         myChipsLabel.setText("Мои фишки: " + me.Chips);
+
+        resizeComponents();
     }
     void resizeComponents()
     {
         Poker poker = (Poker)PokerContainer.getPoker();
         TableModel table = PokerContainer.getPoker().getTable();
 
-        for(var p : table.PlacePlayerMap.values())
-            if(p.NickName.equals(poker.getCurrentPlayer().NickName))
-                poker.setCurrentPlayer(p);
-
         PlayerModel me = poker.getCurrentPlayer();
-        if(me == null) return;
         double sw = mainPanel.getWidth()/100;
         double sh = mainPanel.getHeight()/100;
         double res;
@@ -227,9 +222,7 @@ public class GameWindow extends JFrame {
         {
             int windowPlayerPlace = i;
 
-            System.out.println("is queu:" + me.InQueue);
-
-            if(me.InQueue == false)
+            if(me != null && me.InQueue == false)
             {
                 if (windowPlayerPlace == me.Place)
                     continue;
@@ -237,18 +230,20 @@ public class GameWindow extends JFrame {
                     playersPanels[i].setVisible(true);
             }
             else
-            {
                 playersPanels[i].setVisible(true);
-            }
 
             PlayerModel player = table.PlacePlayerMap.get(windowPlayerPlace);
+
+            if(player == null)
+                return;
+
             playersNicknameLabels[i].setText(player.NickName);
 
             if(playersPanels[i].isVisible())
             {
                 for(int j = 0; j < 2; j++)
                 {
-                    if(player.Cards.get(j).IsOpened == true)
+                    if(player.Cards.get(j).Opened == true)
                         playersCardsLabels[i][j].setIcon(new ImageIcon((new ImageIcon(this.getClass().getResource("Pictures/Cards/" + player.Cards.get(j).Color + "/" + player.Cards.get(j).Name + ".jpg"))).getImage().getScaledInstance((int) (res * 13), (int) (res * 22), 5)));
                     else
                         playersCardsLabels[i][j].setIcon(new ImageIcon((new ImageIcon(this.getClass().getResource("Pictures/Cards/shirt.png"))).getImage().getScaledInstance((int) (res * 13), (int) (res * 22), 1)));
@@ -278,7 +273,7 @@ public class GameWindow extends JFrame {
         if(table.CardsOnTable == null) return;
         if(table.CardsOnTable.size() == 0) return;
         for(int i = 0; i < 5; i++) {
-            if(table.CardsOnTable.get(i).IsOpened == true)
+            if(table.CardsOnTable.get(i).Opened == true)
                 tableCardsLabels[i].setIcon(new ImageIcon((
                         new ImageIcon(this.getClass().getResource("Pictures/Cards/" + table.CardsOnTable.get(i).Color + "/" + table.CardsOnTable.get(i).Name + ".jpg"))).getImage().getScaledInstance((int) (res * 13), (int) (res * 22), 5)));
             else
@@ -286,8 +281,10 @@ public class GameWindow extends JFrame {
                         new ImageIcon(this.getClass().getResource("Pictures/Cards/shirt.png"))).getImage().getScaledInstance((int) (res * 13), (int) (res * 22), 5)));
         }
 
-        if(me.Cards == null) return;
+
+        if(me == null) return;
         if(me.Cards.size() == 0) return;
+
         for(int i = 0; i < 2; i++) {
             myCard1.setIcon(new ImageIcon((new ImageIcon(this.getClass().getResource("Pictures/Cards/" + me.Cards.get(0).Color + "/" + me.Cards.get(0).Name + ".jpg"))).getImage().getScaledInstance((int) (res * 13), (int) (res * 22), 5)));
             myCard2.setIcon(new ImageIcon((new ImageIcon(this.getClass().getResource("Pictures/Cards/" + me.Cards.get(1).Color + "/" + me.Cards.get(1).Name + ".jpg"))).getImage().getScaledInstance((int) (res * 13), (int) (res * 22), 5)));
