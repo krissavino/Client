@@ -28,6 +28,7 @@ public class UpdateInfo extends SimpleCommandModel implements ICommand
         poker.setTable(Table);
         setNewCurrentPlayer();
 
+
         if(Table.LobbyState == LobbyState.Waiting)
         {
             GameWindowContainer.getGameWindow().setVisible(false);
