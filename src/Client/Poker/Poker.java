@@ -23,6 +23,17 @@ public class Poker implements IPoker
         Poker.CurrentPlayer = player;
     }
 
+    public PlayerModel getPlayer(String nickName)
+    {
+        var playersFromPlacePlayerMap = Poker.Table.PlacePlayerMap.values();
+
+        for (var player : playersFromPlacePlayerMap)
+            if(player.NickName.equals(nickName))
+                return player;
+
+        return null;
+    }
+
     public void setTable(TableModel table)
     {
         Poker.Table = table;

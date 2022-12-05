@@ -24,7 +24,9 @@ public class UpdateInfo extends SimpleCommandModel implements ICommand
         if(Table == null)
             return;
 
-        PokerContainer.getPoker().setTable(Table);
+        var poker = PokerContainer.getPoker();
+        poker.setTable(Table);
+        setNewCurrentPlayer();
 
         if(Table.LobbyState == LobbyState.Waiting)
         {
@@ -40,4 +42,16 @@ public class UpdateInfo extends SimpleCommandModel implements ICommand
     }
 
     public void sendToServer() {}
+
+    private void setNewCurrentPlayer()
+    {
+        var poker = PokerContainer.getPoker();
+        var currentPlayer = poker.getCurrentPlayer();
+        var newCurrentPlayer = poker.getPlayer(currentPlayer.NickName);
+
+        if(newCurrentPlayer == null)
+            return;
+
+        poker.setCurrentPlayer(newCurrentPlayer);
+    }
 }
