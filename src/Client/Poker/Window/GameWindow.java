@@ -242,9 +242,7 @@ public class GameWindow extends JFrame {
     {
         Poker poker = (Poker)PokerContainer.getPoker();
         TableModel table = PokerContainer.getPoker().getTable();
-        for(var p : table.PlacePlayerMap.values())
-            if(p.NickName.equals(poker.getCurrentPlayer().NickName))
-                poker.setCurrentPlayer(p);
+
         PlayerModel me = poker.getCurrentPlayer();
 
         double sw = mainPanel.getWidth()/100;
@@ -396,7 +394,6 @@ public class GameWindow extends JFrame {
     public GameWindow() {
         createElementsArrays();
         setContentPane(mainPanel);
-
 
         setSize(500,500);
         setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
