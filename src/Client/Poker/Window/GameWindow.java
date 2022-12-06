@@ -353,43 +353,10 @@ public class GameWindow extends JFrame {
             myCard2.setIcon(new ImageIcon((new ImageIcon(this.getClass().getResource("Pictures/Cards/" + me.Cards.get(1).Color + "/" + me.Cards.get(1).Name + ".jpg"))).getImage().getScaledInstance((int) (res * 13), (int) (res * 22), 5)));
         }
 
-        /*checkButton.setVisible(table.Bet < 0);
-        betButton.setVisible(table.Bet < 0);
-        raiseButton.setVisible(table.Bet > 0);
-        callButton.setVisible(table.Bet > 0);*/
-
-        /*boolean isBetsBalanced = true;
-        boolean isFirst = true;
-        int balancedBet = 0;
-        for(var player : table.PlacePlayerMap.values()) {
-            if(isFirst) {
-                balancedBet = player.Bet;
-                isFirst = false;
-                continue;
-            }
-            if(player.Bet != balancedBet) {
-                isBetsBalanced = false;
-                break;
-            }
-        }
-        if(isBetsBalanced) {
-            if(table.PlacePlayerMap.size() == 2) {
-                if(me.Place == table.PlayerIndexTurn && me.Role == Role.SmallBlind) {
-                    checkButton.setVisible(true);
-                    betButton.setVisible(true);
-                    raiseButton.setVisible(false);
-                    callButton.setVisible(false);
-                }
-            } else {
-                if(me.Place == table.PlayerIndexTurn && me.Role == Role.BigBlind) {
-                    checkButton.setVisible(true);
-                    betButton.setVisible(true);
-                    raiseButton.setVisible(false);
-                    callButton.setVisible(false);
-                }
-            }
-        }*/
-
+        checkButton.setVisible(table.Bet == me.Bet);
+        callButton.setVisible(table.Bet > me.Bet);
+        raiseButton.setVisible(table.Bet > me.Bet);
+        betButton.setVisible(table.Bet == me.Bet);
     }
 
     public GameWindow() {
