@@ -121,7 +121,7 @@ public class AuthorizeWindow extends JFrame {
         setDefaultCloseOperation(EXIT_ON_CLOSE);
         setSize(500,500);
         setVisible(true);
-
+        nickNameTextField.requestFocus();
         var localAddresses = LocalNetManager.GetLocalInetAddresses();
         for(var address : localAddresses)
             addressesList.addItem(address.getHostAddress());

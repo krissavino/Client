@@ -363,7 +363,7 @@ public class GameWindow extends JFrame {
         createElementsArrays();
         setContentPane(mainPanel);
 
-        setSize(500,500);
+        setSize(500,600);
         setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
         setVisible(true);
 
