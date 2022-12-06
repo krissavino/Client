@@ -301,6 +301,7 @@ public class GameWindow extends JFrame {
                     playersBetLabels[i].setIcon(new ImageIcon((new ImageIcon(this.getClass().getResource("Pictures/Interface/chips.png")))
                             .getImage().getScaledInstance((int) (res * 3), (int) (res * 3), 1)));
                     playersBetLabels[i].setText(""+player.Bet);
+                    playersBetLabels[i].setVisible(true);
                 } else {
                     playersBetLabels[i].setVisible(false);
                     playersBetLabels[i].setText("");
@@ -447,7 +448,8 @@ public class GameWindow extends JFrame {
                 if(PokerContainer.getPoker().getCurrentPlayer().Chips < PokerContainer.getPoker().getTable().Bet)
                     return;
                 int bet = Integer.parseInt(betComboBox.getSelectedItem().toString());
-                System.out.println(bet);
+                if(PokerContainer.getPoker().getCurrentPlayer().Chips < bet)
+                    return;
                 move.setObjectToSend(bet);
                 move.sendToServer();
             }
@@ -458,7 +460,10 @@ public class GameWindow extends JFrame {
                 MoveRaise move = new MoveRaise();
                 if(PokerContainer.getPoker().getCurrentPlayer().Chips < PokerContainer.getPoker().getTable().Bet)
                     return;
-                move.setObjectToSend(0);
+                int bet = Integer.parseInt(betComboBox.getSelectedItem().toString());
+                if(PokerContainer.getPoker().getCurrentPlayer().Chips < bet)
+                    return;
+                move.setObjectToSend(bet);
                 move.sendToServer();
             }
         });
