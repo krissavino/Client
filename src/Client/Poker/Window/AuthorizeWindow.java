@@ -72,6 +72,7 @@ public class AuthorizeWindow extends JFrame {
     {
         spam = false;
         label1.setText("Соединение прервалось, повторите попытку");
+        loadingLabel.setVisible(false);
     }
 
     boolean spam = false;
