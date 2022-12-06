@@ -105,22 +105,15 @@ public class AuthorizeWindow extends JFrame {
         double sh = mainPanel.getHeight()/100;
         double res = (sw > sh ? sh : sw);
 
-        loadingLabel.setVisible(true);
         loadingLabel.setIcon(new ImageIcon(new ImageIcon(this.getClass().getResource("Pictures/Interface/loading.gif")).getImage().getScaledInstance((int)(res*15),(int)(res*15),1)));
     }
     public AuthorizeWindow()
     {
-        /*if(true) {
-            loadingLabel.setVisible(true);
-            var connectThread = new Thread(() -> fastConnect(String.valueOf(Calendar.getInstance().getTimeInMillis())));
-            connectThread.start();
-            return;
-        }*/
-
         setContentPane(mainPanel);
         setDefaultCloseOperation(EXIT_ON_CLOSE);
         setSize(500,500);
         setVisible(true);
+        loadingLabel.setVisible(false);
         nickNameTextField.requestFocus();
         var localAddresses = LocalNetManager.GetLocalInetAddresses();
         for(var address : localAddresses)

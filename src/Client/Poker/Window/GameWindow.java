@@ -426,10 +426,8 @@ public class GameWindow extends JFrame {
             @Override
             public void actionPerformed(ActionEvent e) {
                 MoveRaise move = new MoveRaise();
-                if(PokerContainer.getPoker().getCurrentPlayer().Chips < PokerContainer.getPoker().getTable().Bet)
-                    return;
                 int bet = Integer.parseInt(betComboBox.getSelectedItem().toString());
-                if(PokerContainer.getPoker().getCurrentPlayer().Chips < bet)
+                if(PokerContainer.getPoker().getCurrentPlayer().Chips < PokerContainer.getPoker().getTable().Bet+bet)
                     return;
                 move.setObjectToSend(bet);
                 move.sendToServer();
