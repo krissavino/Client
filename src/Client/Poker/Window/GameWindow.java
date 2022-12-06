@@ -353,11 +353,10 @@ public class GameWindow extends JFrame {
             myCard2.setIcon(new ImageIcon((new ImageIcon(this.getClass().getResource("Pictures/Cards/" + me.Cards.get(1).Color + "/" + me.Cards.get(1).Name + ".jpg"))).getImage().getScaledInstance((int) (res * 13), (int) (res * 22), 5)));
         }
 
+        checkButton.setVisible(table.Bet == me.Bet);
         callButton.setVisible(table.Bet > me.Bet);
         raiseButton.setVisible(table.Bet > me.Bet);
-        checkButton.setVisible(table.Bet == me.Bet);
-        checkButton.setVisible(table.Bet == me.Bet);
-
+        betButton.setVisible(table.Bet == me.Bet);
     }
 
     public GameWindow() {
