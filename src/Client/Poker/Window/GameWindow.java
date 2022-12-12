@@ -152,10 +152,11 @@ public class GameWindow extends JFrame {
 
         if(res < 1) res = 1;
 
-        for(int i = 0; i < playersAvatarLabels.length; i++)
-        {
+        for(int i = 0; i < playersAvatarLabels.length; i++) {
             playersAvatarLabels[i].setIcon(new ImageIcon(new ImageIcon(this.getClass().getResource("Pictures/Interface/Player.png")).getImage().getScaledInstance((int)(res*150),(int)(res*150),1)));
+            tableCardsLabels[i].setVisible(false);
         }
+
 
         betComboBox.addItem("10");
         betComboBox.addItem("25");
@@ -170,6 +171,13 @@ public class GameWindow extends JFrame {
         for(var playerPanel : playersPanels)
             playerPanel.setBorder(BorderFactory.createLineBorder(Color.black));
 
+        for(int i = 0; i < 5; i++)
+            tableCardsLabels[i].setLayout(new FlowLayout(FlowLayout.CENTER, FlowLayout.CENTER, FlowLayout.CENTER));
+        for(int i = 0; i < 5; i++)
+            for(int j = 0; j < 2; j++)
+                playersCardsLabels[i][j].setLayout(new FlowLayout(FlowLayout.CENTER, FlowLayout.CENTER, FlowLayout.CENTER));
+        myCard1.setLayout(new FlowLayout(FlowLayout.CENTER, FlowLayout.CENTER, FlowLayout.CENTER));
+        myCard2.setLayout(new FlowLayout(FlowLayout.CENTER, FlowLayout.CENTER, FlowLayout.CENTER));
 
     }
     public void updateInfo()
@@ -191,7 +199,7 @@ public class GameWindow extends JFrame {
         for(int i = 0; i < 4; i++)
             playersProgressBars[i].setValue(0);
 
-        repaint();
+        //repaint();
 
         if(!(PokerContainer.getPoker().getTable().LobbyState == LobbyState.Started)) return;
 
@@ -229,7 +237,7 @@ public class GameWindow extends JFrame {
         if(progressBar.getValue() >= 100)
         {
             progressBar.setValue(0);
-            repaint();
+            //repaint();
             moveTimer.cancel();
         }
     }
@@ -238,10 +246,17 @@ public class GameWindow extends JFrame {
     {
         resizeComponents();
     }
+
+    boolean isFirstWinner = true;
     void resizeComponents()
     {
         Poker poker = (Poker)PokerContainer.getPoker();
         TableModel table = PokerContainer.getPoker().getTable();
+        var winnerCombination = table.WinnerCombination;
+        Component[] components = tableCardsPanel.getComponents();
+        for(var comp : components) {
+            ((JLabel)comp).removeAll();
+        }
 
         PlayerModel me = poker.getCurrentPlayer();
 
@@ -250,35 +265,62 @@ public class GameWindow extends JFrame {
         double res;
         res = (sw > sh ? sh : sw);
 
+        JLabel test = new JLabel();
+        test.setIcon(
+                new ImageIcon((new ImageIcon(this.getClass().getResource("Pictures/Interface/cardLight.png")))
+                        .getImage().getScaledInstance((int) (res * 13), (int) (res * 22), 1)));
+
         if(me != null) {
             int myBet = (me.Bet < 0 ? 0 : me.Bet);
             myBetLabel.setText("Моя ставка: " + myBet);
+            myChipsLabel.setText("Мои фишки: " + me.Chips);
             myNicknameLabel.setText(me.NickName);
             if(me.LastMove == MoveType.Fold) {
                 myAvatarLabel.setIcon(
                         new ImageIcon((new ImageIcon(this.getClass().getResource("Pictures/Interface/Fold.png")))
                                 .getImage().getScaledInstance((int) (res * 15), (int) (res * 15), 1)));
             } else {
-                myAvatarLabel.setIcon(
-                        new ImageIcon((new ImageIcon(this.getClass().getResource("Pictures/Interface/" + me.Role + ".png")))
-                                .getImage().getScaledInstance((int) (res * 15), (int) (res * 15), 1)));
+                if(table.Winner != null) {
+                    if(table.Winner.NickName.equals(me.NickName)) {
+                        myAvatarLabel.setIcon(
+                                new ImageIcon((new ImageIcon(this.getClass().getResource("Pictures/Interface/Winner.png")))
+                                        .getImage().getScaledInstance((int) (res * 15), (int) (res * 15), 1)));
+                    }
+                    if(table.Winners != null) {
+                        for(var winner : table.Winners) {
+                            if(winner.NickName.equals(me.NickName)) {
+                                myAvatarLabel.setIcon(
+                                        new ImageIcon((new ImageIcon(this.getClass().getResource("Pictures/Interface/Winner.png")))
+                                                .getImage().getScaledInstance((int) (res * 15), (int) (res * 15), 1)));
+                            }
+                        }
+                    }
+                } else {
+                    if(me.LastMove == MoveType.Fold || me.LastMove == MoveType.AllIn) {
+                        myAvatarLabel.setIcon(
+                                new ImageIcon((new ImageIcon(this.getClass().getResource("Pictures/Interface/" + me.LastMove.name() + ".png")))
+                                        .getImage().getScaledInstance((int) (res * 15), (int) (res * 15), 1)));
+                    } else {
+                        myAvatarLabel.setIcon(
+                                new ImageIcon((new ImageIcon(this.getClass().getResource("Pictures/Interface/" + me.Role + ".png")))
+                                        .getImage().getScaledInstance((int) (res * 15), (int) (res * 15), 1)));
+                    }
+                }
             }
-            myChipsLabel.setText("Мои фишки: " + me.Chips);
+
         }
 
         for(int i = 0; i < playersPanels.length; i++)
             playersPanels[i].setVisible(false);
 
         for(int i = 0; i < table.PlacePlayerMap.size(); i++) {
-            if(table.PlacePlayerMap.get(i) != null)
-                playersPanels[i].setVisible(true);
-            if(table.PlacePlayerMap.get(i).NickName.equals(poker.getCurrentPlayer().NickName))
-                playersPanels[i].setVisible(false);
-
             PlayerModel player = table.PlacePlayerMap.get(i);
-
             if(player == null)
                 return;
+            playersPanels[i].setVisible(true);
+            if (player.NickName.equals(poker.getCurrentPlayer().NickName))
+                playersPanels[i].setVisible(false);
+
 
             playersNicknameLabels[i].setText(player.NickName);
             tablePotLabel.setText(""+table.Pot);
@@ -295,6 +337,17 @@ public class GameWindow extends JFrame {
                     else
                         playersCardsLabels[i][j].setIcon(new ImageIcon((new ImageIcon(this.getClass().getResource("Pictures/Cards/shirt.png")))
                                 .getImage().getScaledInstance((int) (res * 13), (int) (res * 22), 1)));
+                    playersCardsLabels[i][j].validate();
+                    playersCardsLabels[i][j].repaint();
+                    if(winnerCombination != null) {
+                        for(var card : winnerCombination) {
+                            if(card.equals(player.Cards.get(j))) {
+                                playersCardsLabels[i][j].add(test);
+                                playersCardsLabels[i][j].validate();
+                                playersCardsLabels[i][j].repaint();
+                            }
+                        }
+                    }
                 }
 
                 if(player.Bet > 0) {
@@ -313,11 +366,20 @@ public class GameWindow extends JFrame {
                         playersAvatarLabels[i].setIcon(
                                 new ImageIcon((new ImageIcon(this.getClass().getResource("Pictures/Interface/Winner.png")))
                                         .getImage().getScaledInstance((int) (res * 15), (int) (res * 15), 1)));
+                    if(table.Winners != null) {
+                        for(var winner : table.Winners) {
+                            if(winner.NickName.equals(table.PlacePlayerMap.get(i).NickName)) {
+                                playersAvatarLabels[i].setIcon(
+                                        new ImageIcon((new ImageIcon(this.getClass().getResource("Pictures/Interface/Winner.png")))
+                                                .getImage().getScaledInstance((int) (res * 15), (int) (res * 15), 1)));
+                            }
+                        }
+                    }
                     continue;
                 }
-                if(player.LastMove == MoveType.Fold) {
+                if(player.LastMove == MoveType.Fold || player.LastMove == MoveType.AllIn) {
                     playersAvatarLabels[i].setIcon(
-                            new ImageIcon((new ImageIcon(this.getClass().getResource("Pictures/Interface/Fold.png")))
+                            new ImageIcon((new ImageIcon(this.getClass().getResource("Pictures/Interface/" + player.LastMove.name() + ".png")))
                                     .getImage().getScaledInstance((int) (res * 15), (int) (res * 15), 1)));
                 } else {
                     playersAvatarLabels[i].setIcon(
@@ -331,12 +393,22 @@ public class GameWindow extends JFrame {
         if(table.CardsOnTable == null) return;
         if(table.CardsOnTable.size() == 0) return;
         for(int i = 0; i < 5; i++) {
+            tableCardsLabels[i].setVisible(true);
             if(table.CardsOnTable.get(i).Opened == true)
                 tableCardsLabels[i].setIcon(new ImageIcon((
                         new ImageIcon(this.getClass().getResource("Pictures/Cards/" + table.CardsOnTable.get(i).Color + "/" + table.CardsOnTable.get(i).Name + ".jpg"))).getImage().getScaledInstance((int) (res * 13), (int) (res * 22), 5)));
             else
                 tableCardsLabels[i].setIcon(new ImageIcon((
                         new ImageIcon(this.getClass().getResource("Pictures/Cards/shirt.png"))).getImage().getScaledInstance((int) (res * 13), (int) (res * 22), 5)));
+            if(winnerCombination != null) {
+                for(var card : winnerCombination) {
+                    if(card.equals(table.CardsOnTable.get(i))) {
+                        tableCardsLabels[i].add(test);
+                        tableCardsLabels[i].validate();
+                        tableCardsLabels[i].repaint();
+                    }
+                }
+            }
         }
 
         if(me.InQueue) {
@@ -348,10 +420,42 @@ public class GameWindow extends JFrame {
         if(me == null) return;
         if(me.Cards.size() == 0) return;
 
-        for(int i = 0; i < 2; i++) {
-            myCard1.setIcon(new ImageIcon((new ImageIcon(this.getClass().getResource("Pictures/Cards/" + me.Cards.get(0).Color + "/" + me.Cards.get(0).Name + ".jpg"))).getImage().getScaledInstance((int) (res * 13), (int) (res * 22), 5)));
-            myCard2.setIcon(new ImageIcon((new ImageIcon(this.getClass().getResource("Pictures/Cards/" + me.Cards.get(1).Color + "/" + me.Cards.get(1).Name + ".jpg"))).getImage().getScaledInstance((int) (res * 13), (int) (res * 22), 5)));
-        }
+        myCard1.setIcon(new ImageIcon((new ImageIcon(this.getClass().getResource("Pictures/Cards/" + me.Cards.get(0).Color + "/" + me.Cards.get(0).Name + ".jpg"))).getImage().getScaledInstance((int) (res * 13), (int) (res * 22), 5)));
+        myCard2.setIcon(new ImageIcon((new ImageIcon(this.getClass().getResource("Pictures/Cards/" + me.Cards.get(1).Color + "/" + me.Cards.get(1).Name + ".jpg"))).getImage().getScaledInstance((int) (res * 13), (int) (res * 22), 5)));
+        myCard1.removeAll();
+        myCard1.validate();
+        myCard1.repaint();
+        myCard2.removeAll();
+        myCard2.validate();
+        myCard2.repaint();
+        new Timer().schedule(new TimerTask() {
+            @Override
+            public void run() {
+                if(winnerCombination != null) {
+                    for(var card : winnerCombination) {
+                        if(card.equals(me.Cards.get(0))) {
+                            myCard1.add(test);
+                            myCard1.validate();
+                            myCard1.repaint();
+                        }
+                    }
+                }
+            }
+        }, 300);
+        new Timer().schedule(new TimerTask() {
+            @Override
+            public void run() {
+                if(winnerCombination != null) {
+                    for(var card : winnerCombination) {
+                        if(card.equals(me.Cards.get(1))) {
+                            myCard2.add(test);
+                            myCard2.validate();
+                            myCard2.repaint();
+                        }
+                    }
+                }
+            }
+        }, 500);
 
         checkButton.setVisible(table.Bet == me.Bet);
         callButton.setVisible(table.Bet > me.Bet);
@@ -402,8 +506,6 @@ public class GameWindow extends JFrame {
             @Override
             public void actionPerformed(ActionEvent e) {
                 MoveCall move = new MoveCall();
-                if(PokerContainer.getPoker().getCurrentPlayer().Chips < PokerContainer.getPoker().getTable().Bet)
-                    return;
                 move.setObjectToSend(0);
                 move.sendToServer();
             }
@@ -412,11 +514,7 @@ public class GameWindow extends JFrame {
             @Override
             public void actionPerformed(ActionEvent e) {
                 MoveBet move = new MoveBet();
-                if(PokerContainer.getPoker().getCurrentPlayer().Chips < PokerContainer.getPoker().getTable().Bet)
-                    return;
                 int bet = Integer.parseInt(betComboBox.getSelectedItem().toString());
-                if(PokerContainer.getPoker().getCurrentPlayer().Chips < bet)
-                    return;
                 move.setObjectToSend(bet);
                 move.sendToServer();
             }
@@ -426,8 +524,6 @@ public class GameWindow extends JFrame {
             public void actionPerformed(ActionEvent e) {
                 MoveRaise move = new MoveRaise();
                 int bet = Integer.parseInt(betComboBox.getSelectedItem().toString());
-                if(PokerContainer.getPoker().getCurrentPlayer().Chips < PokerContainer.getPoker().getTable().Bet+bet)
-                    return;
                 move.setObjectToSend(bet);
                 move.sendToServer();
             }

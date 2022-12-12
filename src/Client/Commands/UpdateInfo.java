@@ -29,7 +29,8 @@ public class UpdateInfo extends SimpleCommandModel implements ICommand
         setNewCurrentPlayer();
 
 
-        if(Table.LobbyState == LobbyState.Waiting)
+        System.out.println(Table.LobbyState);
+        if((Table.LobbyState == LobbyState.Waiting) || (Table.PlacePlayerMap.size() <= 1 && Table.LobbyState == LobbyState.Ended))
         {
             GameWindowContainer.getGameWindow().setVisible(false);
             WaitingWindowContainer.getWaitingWindow().setVisible(true);
