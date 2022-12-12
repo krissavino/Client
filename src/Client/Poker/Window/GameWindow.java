@@ -337,17 +337,27 @@ public class GameWindow extends JFrame {
                     else
                         playersCardsLabels[i][j].setIcon(new ImageIcon((new ImageIcon(this.getClass().getResource("Pictures/Cards/shirt.png")))
                                 .getImage().getScaledInstance((int) (res * 13), (int) (res * 22), 1)));
-                    playersCardsLabels[i][j].validate();
-                    playersCardsLabels[i][j].repaint();
-                    if(winnerCombination != null) {
-                        for(var card : winnerCombination) {
-                            if(card.equals(player.Cards.get(j))) {
-                                playersCardsLabels[i][j].add(test);
-                                playersCardsLabels[i][j].validate();
-                                playersCardsLabels[i][j].repaint();
+
+                    int finalI = i;
+                    int finalJ = j;
+                    new Timer().schedule(new TimerTask() {
+                        @Override
+                        public void run() {
+                            playersCardsLabels[finalI][finalJ].removeAll();
+                            playersCardsLabels[finalI][finalJ].validate();
+                            playersCardsLabels[finalI][finalJ].repaint();
+                            if(winnerCombination != null) {
+                                for(var card : winnerCombination) {
+                                    if(card.equals(player.Cards.get(finalJ))) {
+                                        playersCardsLabels[finalI][finalJ].add(test);
+                                        playersCardsLabels[finalI][finalJ].validate();
+                                        playersCardsLabels[finalI][finalJ].repaint();
+                                    }
+                                }
                             }
                         }
-                    }
+                    }, i*100);
+
                 }
 
                 if(player.Bet > 0) {
@@ -400,15 +410,22 @@ public class GameWindow extends JFrame {
             else
                 tableCardsLabels[i].setIcon(new ImageIcon((
                         new ImageIcon(this.getClass().getResource("Pictures/Cards/shirt.png"))).getImage().getScaledInstance((int) (res * 13), (int) (res * 22), 5)));
-            if(winnerCombination != null) {
-                for(var card : winnerCombination) {
-                    if(card.equals(table.CardsOnTable.get(i))) {
-                        tableCardsLabels[i].add(test);
-                        tableCardsLabels[i].validate();
-                        tableCardsLabels[i].repaint();
+
+            int finalI = i;
+            new Timer().schedule(new TimerTask() {
+                @Override
+                public void run() {
+                    if(winnerCombination != null) {
+                        for(var card : winnerCombination) {
+                            if(card.equals(table.CardsOnTable.get(finalI))) {
+                                tableCardsLabels[finalI].add(test);
+                                tableCardsLabels[finalI].validate();
+                                tableCardsLabels[finalI].repaint();
+                            }
+                        }
                     }
                 }
-            }
+            }, 100*i);
         }
 
         if(me.InQueue) {
@@ -441,7 +458,7 @@ public class GameWindow extends JFrame {
                     }
                 }
             }
-        }, 300);
+        }, 100);
         new Timer().schedule(new TimerTask() {
             @Override
             public void run() {
@@ -455,7 +472,7 @@ public class GameWindow extends JFrame {
                     }
                 }
             }
-        }, 500);
+        }, 200);
 
         checkButton.setVisible(table.Bet == me.Bet);
         callButton.setVisible(table.Bet > me.Bet);
